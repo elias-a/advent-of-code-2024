@@ -14,20 +14,24 @@ def is_constrained(level, next_level):
     return abs(level-next_level) >= 1 and abs(level-next_level) <= 3
 
 
-def check(report, func):
-    for i in range(len(report)):
-        report_m = report.copy()
-        report_m.pop(i)
-        if all(func(l, n) for l, n in pairwise(report_m)):
-            return True
-    return False
-
-
-def is_safe(report):
-    increasing = check(report, is_increasing)
-    decreasing = check(report, is_decreasing)
-    constrained = check(report, is_constrained)
+def is_report_safe(report):
+    increasing = all(is_increasing(l, n) for l, n in pairwise(report))
+    decreasing = all(is_decreasing(l, n) for l, n in pairwise(report))
+    constrained = all(is_constrained(l, n) for l, n in pairwise(report))
     return (increasing or decreasing) and constrained
+
+
+def get_reports(original):
+    reports = [original]
+    for i in range(len(original)):
+        report_m = original.copy()
+        report_m.pop(i)
+        reports.append(report_m)
+    return reports
+
+
+def is_safe(original):
+    return any(is_report_safe(r) for r in get_reports(original))
 
 
 with open(os.path.join(os.path.dirname(__file__), "input.txt"), "rt") as f:
