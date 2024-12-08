@@ -2,15 +2,10 @@ import os
 from collections import defaultdict
 
 
-count = 0
-
-
 def check_update(rules, update):
-    global count
     pages = update.split(",")
     for i, page in enumerate(pages):
         if len(set(pages[:i]).intersection(rules[page])) > 0:
-            count += 1
             break
     else:
         return int(pages[(len(pages)-1)//2])
@@ -27,4 +22,3 @@ with open(os.path.join(os.path.dirname(__file__), "input.txt"), "rt") as f:
         after_rules[before].add(after)
     middle_sum = sum(check_update(after_rules, u) for u in updates)
     print(middle_sum)
-    print(count)
